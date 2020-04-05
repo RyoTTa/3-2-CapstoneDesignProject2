@@ -1,0 +1,42 @@
+-학습환경
+	Centos 7 1908
+	darknet yolo v3(v2 사용)
+	CUDA 10.2
+	cudnn 7.6.5
+	Yolo_mark
+
+-Yolo_mark 內
+obj.data
+obj.names
+train.txt
+yolo-obj.cfg
+
+darknet19_448.conv.23
+
+=Test=
+./darknet detector train Capstone/obj.data Capstone/yolo-obj.cfg Capstone/darknet19_448.conv.23
+./darknet detect Capstone/yolo-obj.cfg backup/yolo_900.weights img.jpg
+
+
+-탐지환경
+Centos 7 1908
+Anaconda 202-.02 for Linux
+CUDA 10.0
+cudnn 7.6.5
+OpenCV 4.2.0
+darkflow yolo v2(v2 사용)
+jupyter notebook
+
+=Test=
+labels.txt
+yolo_900.weights
+yolo-obj.cfg
+coco.names
+
+Error source code update
+	./darkflow/utils/loader.py
+	update self.offset = old_offset_value + (found_value - expected_value)
+
+./flow --model cfg/yolo-obj.cfg --load bin/yolo-obj.weights --imgdir sample_img/
+Server.ipynb
+Client.ipynb
