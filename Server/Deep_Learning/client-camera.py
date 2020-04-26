@@ -10,8 +10,8 @@ s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect(('155.230.28.207', 8487))
 
 cam = cv2.VideoCapture(0)
-cam.set(3,320)
-cam.set(4,240)
+#cam.set(3,320)
+#cam.set(4,240)
 
 encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
 

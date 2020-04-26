@@ -25,7 +25,7 @@ options = {
     'model' : 'cfg/yolo-obj.cfg',
     'load' : 'bin/yolo-obj.weights',
     'threshod' : 0.1,
-    'gpu' : 0.7
+    'gpu' : 0.85
 }
 
 tfnet = TFNet(options)
@@ -63,9 +63,7 @@ while True:
 					frame = cv2.imdecode(data, cv2.IMREAD_COLOR)
 					frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 	
-					img = frame
-	
-					results = tfnet.return_predict(img)
+					results = tfnet.return_predict(frame)
         	
 					colors = [tuple(255*np.random.rand(3)) for _ in range(10)]
 					for color, result in zip(colors, results) :
@@ -77,13 +75,15 @@ while True:
 							#r = requests.post('http://155.230.28.207:3000/camera_insert',data={'id':"0",'time':'2020-04-03-14:23', 'cnt':'1'})
 							#print(r.text)
         	
-							img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-							img = cv2.rectangle(img, t1, br, color, 7)
-							img = cv2.putText(img, label, t1, cv2.FONT_HERSHEY_COMPLEX, 1, (0,0,0), 2)
+							frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+							frame = cv2.rectangle(frame, t1, br, color, 7)
+							frame = cv2.putText(frame, label, t1, cv2.FONT_HERSHEY_COMPLEX, 1, (0,0,0), 2)
 					if results :
-						cv2.imshow("Test",img)
+						cv2.imshow("Test",frame)
 						cv2.waitKey(1)	
-					ir.send("activate".encode('utf-8'))
+						ir.send("detection".encode('utf-8'))
+					else :
+						ir.send("activation".encode('utf-8'))
 
 				else:
 					print(ir.getpeername(), 'close', flush=True)
