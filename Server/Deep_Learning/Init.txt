@@ -40,3 +40,8 @@ Error source code update
 ./flow --model cfg/yolo-obj.cfg --load bin/yolo-obj.weights --imgdir sample_img/
 Server.ipynb
 Client.ipynb
+<<<<<<< HEAD
+=======
+
+./flow --model cfg/yolo-obj.cfg --load bin/yolo-obj.weights --demo videofile.mp4 --gpu 1.0 --saveVideo
+>>>>>>> YOLO
