@@ -37,11 +37,5 @@ Error source code update
 	./darkflow/utils/loader.py
 	update self.offset = old_offset_value + (found_value - expected_value)
 
-./flow --model cfg/yolo-obj.cfg --load bin/yolo-obj.weights --imgdir sample_img/
-Server.ipynb
-Client.ipynb
-<<<<<<< HEAD
-=======
-
-./flow --model cfg/yolo-obj.cfg --load bin/yolo-obj.weights --demo videofile.mp4 --gpu 1.0 --saveVideo
->>>>>>> YOLO
+./flow --model cfg/yolo-obj.cfg --load bin/yolo-obj.weights --imgdir sample_img/ --gpu 0.85
+./flow --model cfg/yolo-obj.cfg --load bin/yolo-obj.weights --demo videofile.mp4 --gpu 0.85 --saveVideo

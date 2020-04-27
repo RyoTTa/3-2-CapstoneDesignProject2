@@ -18,7 +18,7 @@ while True:
     
 		img = cv2.imread('smoking.jpg', cv2.IMREAD_COLOR)
 
-		plt.imshow(img)
+		cv2.imshow(img)
 
 		encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
 
@@ -28,5 +28,5 @@ while True:
 
 		s.sendall((str(len(stringData))).encode().ljust(16) + stringData)
 	except KeyboardInterrupt:
-		s.shutdown()
+		s.close()
 		sys.exit()
