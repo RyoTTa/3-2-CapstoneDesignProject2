@@ -39,3 +39,7 @@ Error source code update
 
 ./flow --model cfg/yolo-obj.cfg --load bin/yolo-obj.weights --imgdir sample_img/ --gpu 0.85
 ./flow --model cfg/yolo-obj.cfg --load bin/yolo-obj.weights --demo videofile.mp4 --gpu 0.85 --saveVideo
+
+
+---------------------------YOLO v4----------------------------------
+./darknet detector train Capstone/obj.data Capstone/yolov4-custom.cfg Capstone/yolov4.conv.137
