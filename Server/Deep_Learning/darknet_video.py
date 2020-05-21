@@ -116,6 +116,9 @@ def YOLO():
     input_list = [s]
 
     while True:
+        tobaccoCount=0
+        smokeCount =0
+		
         input_ready, write_ready, except_ready = select.select(input_list, input_list, [])
 
         for ir in input_ready:
@@ -150,14 +153,28 @@ def YOLO():
                         detections = darknet.detect_image(netMain, metaMain, darknet_image, thresh=0.25)
                         image = cvDrawBoxes(detections, frame_resized)
                         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        
-                        if detections :
-                            print(1/(time.time()-prev_time))
+						
+						
+                        for detection in detections :
+                               if detection[0].decode() == 'smoking' :
+                                    tobaccoCount += 1
+                               elif detection[0].decode() == 'smoke' : 
+                                    smokeCount += 1
+									
+                        if tobaccoCount > 0 and smokeCount > 0 :
                             cv2.imshow('Demo', image)
                             cv2.waitKey(3)
-                            ir.send("detection".encode('utf-8'))
+                            ir.send(("detection"+str(tobaccoCount)).encode('utf-8'))
+                        elif tobaccoCount > 0 and smokeCount == 0 :
+                            cv2.imshow('Demo', image)
+                            cv2.waitKey(3)
+                            ir.send(("tobacco"+str(tobaccoCount)).encode('utf-8'))
+                        elif tobaccoCount == 0 and smokeCount > 0 :
+                            cv2.imshow('Demo', image)
+                            cv2.waitKey(3)
+                            ir.send("smoke".encode('utf-8'))
                         else :
-                            ir.send("activation".encode('utf-8'))
+                            ir.send("idle".encode('utf-8'))
     
                     else:
                         print(ir.getpeername(), 'close', flush=True)
