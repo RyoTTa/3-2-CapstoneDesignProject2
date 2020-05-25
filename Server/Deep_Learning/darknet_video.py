@@ -30,6 +30,7 @@ def convertBack(x, y, w, h):
 
 def cvDrawBoxes(detections, img):
     for detection in detections:
+        tobaccoCount += 1
         x, y, w, h = detection[2][0],\
             detection[2][1],\
             detection[2][2],\
@@ -117,7 +118,6 @@ def YOLO():
 
     while True:
         tobaccoCount=0
-        smokeCount =0
 		
         input_ready, write_ready, except_ready = select.select(input_list, input_list, [])
 
@@ -154,25 +154,10 @@ def YOLO():
                         image = cvDrawBoxes(detections, frame_resized)
                         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 						
-						
-                        for detection in detections :
-                               if detection[0].decode() == 'smoking' :
-                                    tobaccoCount += 1
-                               elif detection[0].decode() == 'smoke' : 
-                                    smokeCount += 1
-									
-                        if tobaccoCount > 0 and smokeCount > 0 :
+                        if tobaccoCount > 0 :
                             cv2.imshow('Demo', image)
                             cv2.waitKey(3)
                             ir.send(("detection"+str(tobaccoCount)).encode('utf-8'))
-                        elif tobaccoCount > 0 and smokeCount == 0 :
-                            cv2.imshow('Demo', image)
-                            cv2.waitKey(3)
-                            ir.send(("tobacco"+str(tobaccoCount)).encode('utf-8'))
-                        elif tobaccoCount == 0 and smokeCount > 0 :
-                            cv2.imshow('Demo', image)
-                            cv2.waitKey(3)
-                            ir.send("smoke".encode('utf-8'))
                         else :
                             ir.send("idle".encode('utf-8'))
     

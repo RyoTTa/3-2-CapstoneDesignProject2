@@ -41,73 +41,35 @@ while True:
 		currentTime = time.time()/60
 		
 		if msgDecode =='detection' :
-			fileName = id+str(time.time())+'.jpg'
-			transTime = currentTime
-			detectCount = int(msgDecode[7:8])
-			datas ={
-				'id' : id,
-				'count' : detectCount
-			}
-			#cv2.imwrite(fileName,temp)
-			#files = {'file':open(fileName,'rb')}	
-			#res = requests.post(url,files=files,data=datas)
-			#print(res.text)
-			#alert.play()
-		elif msgDecode[0:7] =='tobacco' :
-			if (currentTime - tobaccoTime) >= 3 : 
-				tobaccoTime = currentTime
+			if abs(transTime - currentTime) >3 :
+				fileName = id+str(time.time())+'.jpg'
+				transTime = currentTime
 				detectCount = int(msgDecode[7:8])
-			else :
-				if (int(msgDecode[7:8]) > detectCount) and abs(tobaccoTime - smokeTime) < 3 :
-					fileName = id+str(currentTime)+'.jpg'
-					transTime = currentTime
-					detectCount = int(msgDecode[7:8])
-					datas ={
-						'id' : id,
-						'count' : detectCount
-					}
-					#cv2.imwrite(fileName,temp)
-					#files = {'file':open(fileName,'rb')}	
-					#res = requests.post(url,files=files,data=datas)
-					#print(res.text) 
-					#alert.play()
-				elif (abs(tobaccoTime - smokeTime) < 3) and (abs(transTime - currentTime) > 3) :
-					fileName = id+str(currentTime)+'.jpg'
-					transTime = currentTime
-					detectCount = int(msgDecode[7:8])
-					datas ={
-						'id' : id,
-						'count' : detectCount
-					}
-					#transTime = currentTime
-					#cv2.imwrite(fileName,temp)
-					#files = {'file':open(fileName,'rb')}	
-					#res = requests.post(url,files=files,data=datas)
-					#print(res.text) 
-					#alert.play()
-				#test
-				elif abs(transTime - currentTime) > 3 : 
-					transTime = currentTime
-					alert.play()
-					print('transmission')
-				#test
-					
-		elif msgDecode =='smoke' :
-			if (currentTime - smokeTime) >= 3 : 
-				smokeTime = currentTime
-			else :
-				if abs(tobaccoTime - smokeTime) < 3 and (abs(transTime - currentTime) > 3) :
-					transTime = currentTime
-					fileName = id+str(currentTime)+'.jpg'
-					datas ={
-						'id' : id,
-						'count' : detectCount
-					}
-					#cv2.imwrite(fileName,temp)
-					#files = {'file':open(fileName,'rb')}	
-					#res = requests.post(url,files=files,data=datas)
-					#print(res.text)
-			
+				datas ={
+					'id' : id,
+					'count' : detectCount
+				}
+				#cv2.imwrite(fileName,temp)
+				#files = {'file':open(fileName,'rb')}	
+				#res = requests.post(url,files=files,data=datas)
+				#print(res.text)
+				alert.play()
+				print('transmission')
+			elif abs(transTime - currentTime) < 3 and detectCount < int(msgDecode[7:8]) :
+				fileName = id+str(time.time())+'.jpg'
+				transTime = currentTime
+				detectCount = int(msgDecode[7:8])
+				datas ={
+					'id' : id,
+					'count' : detectCount
+				}
+				#cv2.imwrite(fileName,temp)
+				#files = {'file':open(fileName,'rb')}	
+				#res = requests.post(url,files=files,data=datas)
+				#print(res.text)
+				alert.play()
+				print('transmission')
+
 		ret, img = cam.read()
 		cv2.imshow("Test",img)
 		cv2.waitKey(1)
@@ -115,7 +77,7 @@ while True:
 
 		result, img = cv2.imencode('.jpg', img, encode_param)
 		data = np.array(img)
-		stringData = data.tostring();
+		stringData = data.tostring()
 		s.sendall((str(len(stringData))).encode().ljust(16) + stringData)
 	
 	except KeyboardInterrupt:
