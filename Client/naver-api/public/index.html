@@ -8,6 +8,7 @@
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
     />
     <title>간단한 지도 표시하기</title>
+    <!--<script src="../src/capture.js"></script>-->
   </head>
   <body>
     <div id="root"></div>
@@ -19,6 +20,85 @@
     ></script>
 
     <script>
+      var capture_log;
+
+      var xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = function () {
+        // 요청에 대한 콜백
+        if (xhr.readyState === xhr.DONE) {
+          // 요청이 완료되면
+          if (xhr.status === 200 || xhr.status === 201) {
+            capture_log = JSON.parse(xhr.responseText);
+            console.log(capture_log.length);
+            var newWindow = window.open("", "View Data");
+            newWindow.document.close();
+            newWindow.document.write(
+              '<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">'
+            );
+            newWindow.document.write(
+              "<scr" +
+                'ipt src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"><' +
+                "/script>"
+            );
+
+            newWindow.document.write(
+              '<form action = "get_payment_date.jsp" method="post">'
+            );
+
+            newWindow.document.write("<p/><p/>");
+
+            newWindow.document.write(
+              '<label for="fromDate" style="margin-left: 20px; margin-right:5px">날짜 </label>'
+            );
+            newWindow.document.write(
+              '<input type="date" name="fromDate" id="fromDate" value="" onkeypress="dateFunction()" style="text-align:center;">'
+            );
+            newWindow.document.write(
+              '~ <input type="date" name="toDate" id="toDate" value="" onkeypress="dateFunction()" style="text-align:center;">'
+            );
+
+            newWindow.document.write(
+              '<button type = "submit" class="button_ViewList" style="margin-left: 20px;")>조회</button>'
+            );
+
+            newWindow.document.write("</form>");
+
+            newWindow.document.write('<table class="table table-striped">');
+            newWindow.document.write('<thead class="thead-dark">');
+            newWindow.document.write("<tr>");
+            newWindow.document.write("<th> 번호 </th>");
+            newWindow.document.write("<th> 카메라 </th>");
+            newWindow.document.write("<th> 시간 </th>");
+            newWindow.document.write("<th> 탐지한 수 </th>");
+            newWindow.document.write("<th> img </th>");
+            newWindow.document.write("</tr>");
+            newWindow.document.write("</thead>");
+            newWindow.document.write("<tbody>");
+
+            for (var i = capture_log.length - 1; i >= 0; i--) {
+              newWindow.document.write("<tr>");
+              newWindow.document.write("<td>" + (i + 1) + "</td>");
+              newWindow.document.write("<td>" + capture_log[i].id + "</td>");
+              newWindow.document.write("<td>" + capture_log[i].time + "</td>");
+              newWindow.document.write("<td>" + capture_log[i].count + "</td>");
+              //document.write('<td> <a href="http://155.230.28.207:3000/request_img?img_name='+capture_log[i].img_name+'">확인</a> </td>');
+              newWindow.document.write(
+                '<td> <a target=_blank href="http://155.230.28.207:3000/request_img?img_name=' +
+                  capture_log[i].img_name +
+                  '" onclick="window.open(this.href,"_blank","width=400,,height=400");return false">확인</a> </td>'
+              );
+              newWindow.document.write("</tr>");
+            }
+            newWindow.document.write("</tbody>");
+            newWindow.document.write("</table>");
+            newWindow.document.title = "View Data";
+            newWindow.document.close();
+          } else {
+            console.log(xhr.responseText);
+          }
+        }
+      };
+
       var bound = new naver.maps.LatLngBounds(
         new naver.maps.LatLng(35.721397, 128.300916),
         new naver.maps.LatLng(35.973666, 128.764745)
@@ -27,25 +107,57 @@
       // 맵 생성
       var map = new naver.maps.Map("map", {
         minZoom: 11, // 읍면동 레벨
-        center: new naver.maps.LatLng(35.871429, 128.60174),
-        zoom: 12,
+        center: new naver.maps.LatLng(35.889845, 128.6105),
+        zoom: 17,
         maxBounds: bound,
         //mapTypeId: "normal",
       });
 
       // 마커 생성
-      var marker = new naver.maps.Marker({
-        position: new naver.maps.LatLng(35.890233, 128.611825),
+      var marker1 = new naver.maps.Marker({
+        position: new naver.maps.LatLng(35.88689, 128.608494),
         map: map,
+        animation: naver.maps.Animation.BOUNCE,
+      });
+
+      var marker2 = new naver.maps.Marker({
+        position: new naver.maps.LatLng(35.888154, 128.6109),
+        map: map,
+        animation: naver.maps.Animation.BOUNCE,
+      });
+
+      var marker3 = new naver.maps.Marker({
+        position: new naver.maps.LatLng(35.88814, 128.611388),
+        map: map,
+        animation: naver.maps.Animation.BOUNCE,
       });
 
       // 마커 이벤트
-      naver.maps.Event.addListener(marker, "click", function () {
-        // 새 탭으로 열기
-        // window.open("http://www.naver.com");
+      naver.maps.Event.addListener(marker1, "click", function () {
+        xhr.open(
+          "GET",
+          "http://155.230.28.207:3000/capture_log?cam_id=" + "001",
+          true
+        );
+        xhr.send();
+      });
 
-        // 현재 화면 변경
-        location.href = "http://www.naver.com";
+      naver.maps.Event.addListener(marker2, "click", function () {
+        xhr.open(
+          "GET",
+          "http://155.230.28.207:3000/capture_log?cam_id=" + "002",
+          true
+        );
+        xhr.send();
+      });
+
+      naver.maps.Event.addListener(marker3, "click", function () {
+        xhr.open(
+          "GET",
+          "http://155.230.28.207:3000/capture_log?cam_id=" + "003",
+          true
+        );
+        xhr.send();
       });
 
       // 대구 테두리
