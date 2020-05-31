@@ -10,6 +10,8 @@ import socket
 import time
 import select
 
+tobaccoCount=0
+
 def recvall(sock, count):
     buf = b''
     while count:
@@ -30,6 +32,7 @@ def convertBack(x, y, w, h):
 
 def cvDrawBoxes(detections, img):
     for detection in detections:
+        global tobaccoCount
         tobaccoCount += 1
         x, y, w, h = detection[2][0],\
             detection[2][1],\
@@ -54,7 +57,8 @@ altNames = None
 
 
 def YOLO():
-
+    global tobaccoCount
+    
     global metaMain, netMain, altNames
     configPath = "./yolov4-custom.cfg"
     weightPath = "./yolov4-custom_last.weights"
@@ -103,7 +107,7 @@ def YOLO():
                                     darknet.network_height(netMain),3)
 
     HOST='155.230.28.207'
-    PORT=8487
+    PORT=8488
 
     s=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
     print('Socket created')
@@ -117,8 +121,8 @@ def YOLO():
     input_list = [s]
 
     while True:
+
         tobaccoCount=0
-		
         input_ready, write_ready, except_ready = select.select(input_list, input_list, [])
 
         for ir in input_ready:

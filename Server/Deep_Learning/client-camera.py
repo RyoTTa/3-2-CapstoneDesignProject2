@@ -15,7 +15,7 @@ smokeTime = 0
 transTime = 0
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.connect(('155.230.28.207', 8487))
+s.connect(('155.230.28.207', 8488))
 
 cam = cv2.VideoCapture(0)
 cam.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
@@ -39,34 +39,37 @@ while True:
 		msgDecode = msg.decode('utf-8')
 		print(msgDecode)
 		currentTime = time.time()/60
+		print(currentTime)
+		print(transTime)
 		
-		if msgDecode =='detection' :
+		if msgDecode[0:9] == 'detection' :
+			#if abs(transTime - currentTime) >3 :
 			if abs(transTime - currentTime) >3 :
 				fileName = id+str(time.time())+'.jpg'
 				transTime = currentTime
-				detectCount = int(msgDecode[7:8])
+				detectCount = int(msgDecode[9:10])
 				datas ={
 					'id' : id,
 					'count' : detectCount
 				}
-				#cv2.imwrite(fileName,temp)
-				#files = {'file':open(fileName,'rb')}	
-				#res = requests.post(url,files=files,data=datas)
-				#print(res.text)
+				cv2.imwrite(fileName,temp)
+				files = {'file':open(fileName,'rb')}	
+				res = requests.post(url,files=files,data=datas)
+				print(res.text)
 				alert.play()
 				print('transmission')
-			elif abs(transTime - currentTime) < 3 and detectCount < int(msgDecode[7:8]) :
+			elif abs(transTime - currentTime) < 3 and detectCount < int(msgDecode[9:10]) :
 				fileName = id+str(time.time())+'.jpg'
 				transTime = currentTime
-				detectCount = int(msgDecode[7:8])
+				detectCount = int(msgDecode[9:10])
 				datas ={
 					'id' : id,
 					'count' : detectCount
 				}
-				#cv2.imwrite(fileName,temp)
-				#files = {'file':open(fileName,'rb')}	
-				#res = requests.post(url,files=files,data=datas)
-				#print(res.text)
+				cv2.imwrite(fileName,temp)
+				files = {'file':open(fileName,'rb')}	
+				res = requests.post(url,files=files,data=datas)
+				print(res.text)
 				alert.play()
 				print('transmission')
 
