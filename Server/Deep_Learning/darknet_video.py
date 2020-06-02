@@ -33,7 +33,9 @@ def convertBack(x, y, w, h):
 def cvDrawBoxes(detections, img):
     for detection in detections:
         global tobaccoCount
-        tobaccoCount += 1
+        #if round(detection[1] * 100, 2) > 60 : 
+        #    tobaccoCount +=1
+        tobaccoCount +=1
         x, y, w, h = detection[2][0],\
             detection[2][1],\
             detection[2][2],\
@@ -154,7 +156,7 @@ def YOLO():
 
                         darknet.copy_image_from_bytes(darknet_image,frame_resized.tobytes())
 
-                        detections = darknet.detect_image(netMain, metaMain, darknet_image, thresh=0.25)
+                        detections = darknet.detect_image(netMain, metaMain, darknet_image, thresh=0.6)
                         image = cvDrawBoxes(detections, frame_resized)
                         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 						

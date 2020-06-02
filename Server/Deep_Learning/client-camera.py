@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import cv2
 import socket
 import numpy as np
@@ -7,7 +8,9 @@ import sys
 import base64
 import pygame
 
-id = str(sys.argv[1])
+time.sleep(10)
+#id = str(sys.argv[1])
+id = "001"
 currentTime = 0
 detectCount = 0
 tobaccoTime = 0
@@ -22,7 +25,7 @@ cam.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
 cam.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
 pygame.mixer.init()
-alert = pygame.mixer.Sound("alert2.wav")
+alert = pygame.mixer.Sound("/home/pi/Capstone2/alert2.wav")
 
 url = "http://155.230.28.207:3000/capture_insert"
 
@@ -44,7 +47,7 @@ while True:
 		
 		if msgDecode[0:9] == 'detection' :
 			#if abs(transTime - currentTime) >3 :
-			if abs(transTime - currentTime) >3 :
+			if abs(transTime - currentTime) > 3:
 				fileName = id+str(time.time())+'.jpg'
 				transTime = currentTime
 				detectCount = int(msgDecode[9:10])
@@ -52,10 +55,10 @@ while True:
 					'id' : id,
 					'count' : detectCount
 				}
-				cv2.imwrite(fileName,temp)
-				files = {'file':open(fileName,'rb')}	
-				res = requests.post(url,files=files,data=datas)
-				print(res.text)
+				#cv2.imwrite(fileName,temp)
+				#files = {'file':open(fileName,'rb')}	
+				#res = requests.post(url,files=files,data=datas)
+				#print(res.text)
 				alert.play()
 				print('transmission')
 			elif abs(transTime - currentTime) < 3 and detectCount < int(msgDecode[9:10]) :
@@ -66,10 +69,10 @@ while True:
 					'id' : id,
 					'count' : detectCount
 				}
-				cv2.imwrite(fileName,temp)
-				files = {'file':open(fileName,'rb')}	
-				res = requests.post(url,files=files,data=datas)
-				print(res.text)
+				#cv2.imwrite(fileName,temp)
+				#files = {'file':open(fileName,'rb')}	
+				#res = requests.post(url,files=files,data=datas)
+				#print(res.text)
 				alert.play()
 				print('transmission')
 
