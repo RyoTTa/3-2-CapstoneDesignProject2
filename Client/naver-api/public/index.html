@@ -7,98 +7,25 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
     />
-    <title>간단한 지도 표시하기</title>
+    <link rel="stylesheet" href="./nav/nav_style.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto+Mono:100,300,400,500,700&display=swap"
+      rel="stylesheet"
+    />
+    <title>Click Web</title>
     <!--<script src="../src/capture.js"></script>-->
   </head>
   <body>
     <div id="root"></div>
     <div id="map" style="width: 100%; height: 100vh;"></div>
-
     <script
       type="text/javascript"
       src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=pg43l9dp5c"
     ></script>
 
     <script>
-      var capture_log;
-
-      var xhr = new XMLHttpRequest();
-      xhr.onreadystatechange = function () {
-        // 요청에 대한 콜백
-        if (xhr.readyState === xhr.DONE) {
-          // 요청이 완료되면
-          if (xhr.status === 200 || xhr.status === 201) {
-            capture_log = JSON.parse(xhr.responseText);
-            console.log(capture_log.length);
-            var newWindow = window.open("", "View Data");
-            newWindow.document.close();
-            newWindow.document.write(
-              '<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">'
-            );
-            newWindow.document.write(
-              "<scr" +
-                'ipt src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"><' +
-                "/script>"
-            );
-
-            newWindow.document.write(
-              '<form action = "get_payment_date.jsp" method="post">'
-            );
-
-            newWindow.document.write("<p/><p/>");
-
-            newWindow.document.write(
-              '<label for="fromDate" style="margin-left: 20px; margin-right:5px">날짜 </label>'
-            );
-            newWindow.document.write(
-              '<input type="date" name="fromDate" id="fromDate" value="" onkeypress="dateFunction()" style="text-align:center;">'
-            );
-            newWindow.document.write(
-              '~ <input type="date" name="toDate" id="toDate" value="" onkeypress="dateFunction()" style="text-align:center;">'
-            );
-
-            newWindow.document.write(
-              '<button type = "submit" class="button_ViewList" style="margin-left: 20px;")>조회</button>'
-            );
-
-            newWindow.document.write("</form>");
-
-            newWindow.document.write('<table class="table table-striped">');
-            newWindow.document.write('<thead class="thead-dark">');
-            newWindow.document.write("<tr>");
-            newWindow.document.write("<th> 번호 </th>");
-            newWindow.document.write("<th> 카메라 </th>");
-            newWindow.document.write("<th> 시간 </th>");
-            newWindow.document.write("<th> 탐지한 수 </th>");
-            newWindow.document.write("<th> img </th>");
-            newWindow.document.write("</tr>");
-            newWindow.document.write("</thead>");
-            newWindow.document.write("<tbody>");
-
-            for (var i = capture_log.length - 1; i >= 0; i--) {
-              newWindow.document.write("<tr>");
-              newWindow.document.write("<td>" + (i + 1) + "</td>");
-              newWindow.document.write("<td>" + capture_log[i].id + "</td>");
-              newWindow.document.write("<td>" + capture_log[i].time + "</td>");
-              newWindow.document.write("<td>" + capture_log[i].count + "</td>");
-              //document.write('<td> <a href="http://155.230.28.207:3000/request_img?img_name='+capture_log[i].img_name+'">확인</a> </td>');
-              newWindow.document.write(
-                '<td> <a target=_blank href="http://155.230.28.207:3000/request_img?img_name=' +
-                  capture_log[i].img_name +
-                  '" onclick="window.open(this.href,"_blank","width=400,,height=400");return false">확인</a> </td>'
-              );
-              newWindow.document.write("</tr>");
-            }
-            newWindow.document.write("</tbody>");
-            newWindow.document.write("</table>");
-            newWindow.document.title = "View Data";
-            newWindow.document.close();
-          } else {
-            console.log(xhr.responseText);
-          }
-        }
-      };
-
+      // boundary
       var bound = new naver.maps.LatLngBounds(
         new naver.maps.LatLng(35.721397, 128.300916),
         new naver.maps.LatLng(35.973666, 128.764745)
@@ -113,55 +40,187 @@
         //mapTypeId: "normal",
       });
 
-      // 마커 생성
-      var marker1 = new naver.maps.Marker({
-        position: new naver.maps.LatLng(35.88689, 128.608494),
-        map: map,
-        animation: naver.maps.Animation.BOUNCE,
-      });
+      var contentEl = $(
+        '<div class="iw_inner" style="width:50px;height:100%;position:absolute;top:0;left:0;z-index:1000;background-color:#fff;border:solid 2px #CFD2D5;">' +
+          "<h3>Map States</h3>" +
+          "</div>"
+      );
 
-      var marker2 = new naver.maps.Marker({
-        position: new naver.maps.LatLng(35.888154, 128.6109),
-        map: map,
-        animation: naver.maps.Animation.BOUNCE,
-      });
+      contentEl.appendTo(map.getElement());
 
-      var marker3 = new naver.maps.Marker({
-        position: new naver.maps.LatLng(35.88814, 128.611388),
-        map: map,
-        animation: naver.maps.Animation.BOUNCE,
-      });
+      var HOME_PATH = window.HOME_PATH || ".";
 
-      // 마커 이벤트
-      naver.maps.Event.addListener(marker1, "click", function () {
-        xhr.open(
-          "GET",
-          "http://155.230.28.207:3000/capture_log?cam_id=" + "001",
-          true
+      // 마커 위도 경도
+      var latLngs = [
+        new naver.maps.LatLng(35.88689, 128.608494),
+        new naver.maps.LatLng(35.888154, 128.6109),
+        new naver.maps.LatLng(35.88814, 128.611388),
+      ];
+
+      // 숫자를 세자리 수로 변경 ex:1 => 001
+      function pad(n) {
+        var str = "00" + n;
+        str = str.slice(-3);
+
+        return str;
+      }
+
+      var markerList = [],
+        urlArr = [];
+
+      for (var i = 0, ii = latLngs.length; i < ii; i++) {
+        var icon = {
+            url: HOME_PATH + "/marker_img/sp_pins_spot_v3.png",
+            size: new naver.maps.Size(24, 37),
+            anchor: new naver.maps.Point(12, 37),
+            origin: new naver.maps.Point(i * 29, 0),
+          },
+          marker = new naver.maps.Marker({
+            position: latLngs[i],
+            map: map,
+            icon: icon,
+          });
+
+        var dataUrl = "./getData.html?cam_id=" + pad(i + 1);
+
+        marker.set("seq", i);
+
+        markerList.push(marker);
+        urlArr.push(dataUrl);
+
+        marker.addListener("mouseover", onMouseOver);
+        marker.addListener("mouseout", onMouseOut);
+
+        icon = null;
+        marker = null;
+      }
+
+      function onMouseOver(e) {
+        var marker = e.overlay,
+          seq = marker.get("seq");
+
+        marker.setIcon({
+          url: HOME_PATH + "/marker_img/sp_pins_spot_v3_over.png",
+          size: new naver.maps.Size(24, 37),
+          anchor: new naver.maps.Point(12, 37),
+          origin: new naver.maps.Point(seq * 29, 50),
+        });
+      }
+
+      function onMouseOut(e) {
+        var marker = e.overlay,
+          seq = marker.get("seq");
+
+        marker.setIcon({
+          url: HOME_PATH + "/marker_img/sp_pins_spot_v3.png",
+          size: new naver.maps.Size(24, 37),
+          anchor: new naver.maps.Point(12, 37),
+          origin: new naver.maps.Point(seq * 29, 0),
+        });
+      }
+
+      for (var i = 0, ii = markerList.length; i < ii; i++) {
+        naver.maps.Event.addListener(
+          markerList[i],
+          "click",
+          getClickHandler(i)
         );
-        xhr.send();
+      }
+
+      function getClickHandler(seq) {
+        return function (e) {
+          var marker = markerList[seq],
+            url = urlArr[seq];
+          window.open(url);
+          //xhr.open("GET", url, true);
+          //xhr.send();
+        };
+      }
+
+      // 메뉴 바
+      /*
+      var navBar = $(
+        '<div class="iw_inner" style="width:350px;position:absolute;top:0;left:0;z-index:1000;background-color:#fff;border:solid 1px #333;">' +
+          "<h3>hi</h3>" +
+          '<p style="font-size:14px;">zoom : <em class="zoom">' +
+          map.getZoom() +
+          "</em></p>" +
+          '<p style="font-size:14px;">centerPoint : <em class="center">' +
+          map.getCenterPoint() +
+          "</em></p>" +
+          "</div>"
+      );
+      navBar.appendTo(map.getElement());
+      */
+
+      // 경북대 테두리
+      var knu = new naver.maps.Polygon({
+        map: map,
+        paths: [
+          [
+            new naver.maps.LatLng(35.8958183, 128.6131888),
+            new naver.maps.LatLng(35.8956304, 128.6138721),
+            new naver.maps.LatLng(35.8953707, 128.6142),
+            new naver.maps.LatLng(35.8953587, 128.6141994),
+            new naver.maps.LatLng(35.8948959, 128.6136341),
+            new naver.maps.LatLng(35.8948802, 128.6136327),
+            new naver.maps.LatLng(35.8937865, 128.6141451),
+            new naver.maps.LatLng(35.8932661, 128.6143972),
+            new naver.maps.LatLng(35.8925697, 128.6147821),
+            new naver.maps.LatLng(35.8902892, 128.6161125),
+            new naver.maps.LatLng(35.8902164, 128.6161433),
+            new naver.maps.LatLng(35.8901686, 128.6161527),
+            new naver.maps.LatLng(35.8898068, 128.6161393),
+            new naver.maps.LatLng(35.8897351, 128.616146),
+            new naver.maps.LatLng(35.8894352, 128.6162734),
+            new naver.maps.LatLng(35.8889018, 128.6167844),
+            new naver.maps.LatLng(35.8856031, 128.6152957),
+            new naver.maps.LatLng(35.8856074, 128.6152971),
+            new naver.maps.LatLng(35.885414, 128.6150986),
+            new naver.maps.LatLng(35.8851619, 128.6146292),
+            new naver.maps.LatLng(35.8850706, 128.6140753),
+            new naver.maps.LatLng(35.8855129, 128.6138648),
+            new naver.maps.LatLng(35.8861952, 128.6129005),
+            new naver.maps.LatLng(35.8863354, 128.6099434),
+            new naver.maps.LatLng(35.8857411, 128.609926),
+            new naver.maps.LatLng(35.8856987, 128.6098911),
+            new naver.maps.LatLng(35.8856998, 128.6096189),
+            new naver.maps.LatLng(35.8856443, 128.6094834),
+            new naver.maps.LatLng(35.885452, 128.6094821),
+            new naver.maps.LatLng(35.8853771, 128.6094472),
+            new naver.maps.LatLng(35.8853521, 128.6094043),
+            new naver.maps.LatLng(35.8854325, 128.6088102),
+            new naver.maps.LatLng(35.8854922, 128.6086787),
+            new naver.maps.LatLng(35.885778, 128.608322),
+            new naver.maps.LatLng(35.8857845, 128.6082348),
+            new naver.maps.LatLng(35.8861474, 128.6083233),
+            new naver.maps.LatLng(35.8862984, 128.6076112),
+            new naver.maps.LatLng(35.8864375, 128.6076099),
+            new naver.maps.LatLng(35.8864538, 128.6071566),
+            new naver.maps.LatLng(35.8864766, 128.6070386),
+            new naver.maps.LatLng(35.8865831, 128.6055862),
+            new naver.maps.LatLng(35.8866385, 128.6055794),
+            new naver.maps.LatLng(35.8866798, 128.6049035),
+            new naver.maps.LatLng(35.8866983, 128.6048445),
+            new naver.maps.LatLng(35.8883607, 128.6039755),
+            new naver.maps.LatLng(35.8884987, 128.6039138),
+            new naver.maps.LatLng(35.8895428, 128.6039634),
+            new naver.maps.LatLng(35.8898837, 128.6044957),
+            new naver.maps.LatLng(35.890126, 128.604955),
+            new naver.maps.LatLng(35.8905432, 128.6058086),
+            new naver.maps.LatLng(35.8907594, 128.6062237),
+            new naver.maps.LatLng(35.8921981, 128.6091146),
+            new naver.maps.LatLng(35.8923133, 128.6092702),
+            new naver.maps.LatLng(35.8923839, 128.6093801),
+          ],
+        ],
+        strokeColor: "black",
+        strokeOpacity: 0.6,
+        strokeWeight: 3,
       });
 
-      naver.maps.Event.addListener(marker2, "click", function () {
-        xhr.open(
-          "GET",
-          "http://155.230.28.207:3000/capture_log?cam_id=" + "002",
-          true
-        );
-        xhr.send();
-      });
-
-      naver.maps.Event.addListener(marker3, "click", function () {
-        xhr.open(
-          "GET",
-          "http://155.230.28.207:3000/capture_log?cam_id=" + "003",
-          true
-        );
-        xhr.send();
-      });
-
+      /*
       // 대구 테두리
-
       var Daegu = new naver.maps.Polygon({
         map: map,
         paths: [
@@ -237,6 +296,7 @@
         strokeOpacity: 0.6,
         strokeWeight: 3,
       });
+      */
     </script>
   </body>
 </html>

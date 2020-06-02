@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device=width, initial-scale=1" />
+    <title>Data View</title>
+    <style type="text/css"></style>
+  </head>
+  <body>
+    <script>
+      var capture_log;
+      var start_date;
+      var end_date;
+      function getUrlParams() {
+        var params = {};
+        window.location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (
+          str,
+          key,
+          value
+        ) {
+          params[key] = value;
+        });
+        return params;
+      }
+      var xhr = new XMLHttpRequest();
+      var oParams = getUrlParams();
+      function getDate() {
+        start_date = document.getElementById("start_date").value;
+        end_date = document.getElementById("end_date").value;
+        console.log(start_date);
+        console.log(end_date);
+        button_click();
+        xhr.onreadystatechange = function () {
+          // 요청에 대한 콜백
+          if (xhr.readyState === xhr.DONE) {
+            // 요청이 완료되면
+            if (xhr.status === 200 || xhr.status === 201) {
+              capture_log = JSON.parse(xhr.responseText);
+              //console.log(capture_log.length);
+              document.close();
+              document.write(
+                '<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">'
+              );
+              document.write(
+                '<label for="fromDate" style="margin-left: 20px; margin-right:5px">날짜 </label>'
+              );
+              document.write(
+                '<input id="start_date" type="date" name="fromDate" id="fromDate" value="" onkeypress="dateFunction()" style="text-align:center;">'
+              );
+              document.write(
+                '<input id="end_date" type="date" name="toDate" id="toDate" value="" onkeypress="dateFunction()" style="text-align:center;">'
+              );
+              document.write(
+                '<button onclick="getDate()" class="button_ViewList" style="margin-left: 20px;")>조회</button>'
+              );
+              document.title = "Data view";
+              document.write('<table class="table table-striped">');
+              document.write('<thead class="thead-dark">');
+              document.write("<tr>");
+              document.write("<th> 번호 </th>");
+              document.write("<th> 카메라 </th>");
+              document.write("<th> 시간 </th>");
+              document.write("<th> 탐지한 수 </th>");
+              document.write("<th> img </th>");
+              document.write("</tr>");
+              document.write("</thead>");
+              document.write("<tbody>");
+              for (var i = capture_log.length - 1; i >= 0; i--) {
+                if (
+                  start_date <= capture_log[i].time &&
+                  end_date >= capture_log[i].time
+                ) {
+                  document.write("<tr>");
+                  document.write("<td>" + (i + 1) + "</td>");
+                  document.write("<td>" + capture_log[i].id + "</td>");
+
+                  document.write("<td>" + capture_log[i].time + "</td>");
+                  document.write("<td>" + capture_log[i].count + "</td>");
+                  document.write(
+                    '<td> <a target="_blank" href="http://155.230.28.207:3000/request_img?img_name=' +
+                      capture_log[i].img_name +
+                      '" onclick="window.open(this.href,"_blank","width=400,,height=400");return false">확인</a> </td>'
+                  );
+                  document.write("</tr>");
+                }
+              }
+              document.write("</tbody>");
+              document.write("</table>");
+            } else {
+              console.log(xhr.responseText);
+            }
+          }
+        };
+      }
+      document.write(
+        '<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">'
+      );
+      document.write(
+        '<label for="fromDate" style="margin-left: 20px; margin-right:5px">날짜 </label>'
+      );
+      document.write(
+        '<input id="start_date" type="date" name="fromDate" id="fromDate" value="" onkeypress="dateFunction()" style="text-align:center;">'
+      );
+      document.write(
+        '<input id="end_date" type="date" name="toDate" id="toDate" value="" onkeypress="dateFunction()" style="text-align:center;">'
+      );
+      document.write(
+        '<button onclick="getDate()" class="button_ViewList" style="margin-left: 20px;")>조회</button>'
+      );
+      document.write('<table class="table table-striped">');
+      document.write('<thead class="thead-dark">');
+      document.write("<tr>");
+      document.write("<th> 번호 </th>");
+      document.write("<th> 카메라 </th>");
+      document.write("<th> 시간 </th>");
+      document.write("<th> 탐지한 수 </th>");
+      document.write("<th> img </th>");
+      document.write("</tr>");
+      document.write("</thead>");
+
+      function pad(n) {
+        var str = "00" + n;
+        str = str.slice(-3);
+
+        return str;
+      }
+
+      cam_id = oParams.cam_id;
+      //console.log(cam_id);
+
+      function button_click() {
+        console.log(cam_id);
+        var url = "http://155.230.28.207:3000/capture_log?cam_id=" + cam_id;
+        console.log(url);
+        xhr.open("GET", url, true);
+        xhr.send();
+      }
+
+      //button_click();
+    </script>
+  </body>
+</html>
