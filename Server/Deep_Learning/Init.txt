@@ -10,7 +10,7 @@ obj.data
 obj.names
 train.txt
 yolo-obj.cfg
-
+./darknet detector demo cfg/coco.data cfg/yolov3.cfg yolov3.weights videoplayback.mp4
 darknet19_448.conv.23
 
 =Test=
@@ -37,11 +37,41 @@ Error source code update
 	./darkflow/utils/loader.py
 	update self.offset = old_offset_value + (found_value - expected_value)
 
-./flow --model cfg/yolo-obj.cfg --load bin/yolo-obj.weights --imgdir sample_img/
-Server.ipynb
-Client.ipynb
-<<<<<<< HEAD
-=======
+=Test=
+./flow --model cfg/yolo-obj.cfg --load bin/yolo-obj.weights --imgdir sample_img/ --gpu 0.85
+./flow --model cfg/yolo-obj.cfg --load bin/yolo-obj.weights --demo videofile.mp4 --gpu 0.85 --saveVideo
 
-./flow --model cfg/yolo-obj.cfg --load bin/yolo-obj.weights --demo videofile.mp4 --gpu 1.0 --saveVideo
->>>>>>> YOLO
+
+---------------------------YOLO v4----------------------------------
+-학습환경
+	Centos 7 1908
+	darknet yolo v4
+	CUDA 10.2
+	cudnn 7.6.5
+	Yolo_mark
+
+-Yolo_mark 內
+obj.data
+obj.names
+train.txt
+yolo-obj.cfg
+./darknet detector demo cfg/coco.data cfg/yolov4.cfg yolov4.weights videoplayback.mp4
+yolov4.conv.137
+
+=Test=
+./darknet detector train Capstone/obj.data Capstone/yolov4-custom.cfg Capstone/yolov4.conv.137
+./darknet detect Capstone/yolov4-custom.cfg Capstone/backup/yolov4-custom_last.weights img.jpg
+
+
+-탐지환경
+Centos 7 1908
+Anaconda 202-.02 for Linux
+CUDA 10.0
+cudnn 7.6.5
+OpenCV 4.2.0
+darknet yolo v4
+jupyter notebook
+
+=Test=
+./darknet detect Capstone/yolov4-custom.cfg Capstone/backup/yolov4-custom_last.weights img.jpg
+./python3 darknet_video.py
