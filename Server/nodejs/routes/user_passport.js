@@ -1,81 +1,73 @@
 
-module.exports = function(router, passport) {
+  
+module.exports = function(router, passport,app) {
     console.log('user_passport 호출됨.');
 
-    
-    // true
-    router.route('/login_true').get(function(req, res) {
-        console.log('/login_true 패스 요청됨.');
-        res.send("true");
+    // 로그인 화면
+    router.route('/login').get(function(req, res) {
+        console.log('/login 패스 요청됨.');
+        var id = req.query.id;
+        var pw = req.query.pw;
+        res.header("Access-Control-Allow-Origin","*");
+        res.header("Access-Control-Allow-Headers", "X-Requested-With");
+        res.header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
+        var database = req.app.get('database');
+	    database.UserModel.findOne({ 'id' :  id }, function(err, user) {
+	    	if (err) { return done(err); }
+
+	    	// 등록된 사용자가 없는 경우
+	    	if (!user) {
+	    		console.log('계정이 일치하지 않음.');
+	    		res.send('계정이 일치하지 않음.');
+	    	}
+	    	else{
+                // 비밀번호 비교하여 맞지 않는 경우
+                if(pw != user.password)
+                {
+                    console.log('비밀번호 일치하지 않음.');
+                    res.send('비밀번호 일치하지 않음.');
+                }
+                else{
+                    console.log('계정과 비밀번호가 일치함.');
+                    res.send('success');
+                }
+            }
+	    });
     });
-    //false
-  
-    router.route('/login_false').get(function(req, res) {
-        console.log('/login_false 패스 요청됨.');
-        var send_data= 'false';
-        for(var key in req.sessionStore.sessions){
-            console.log(key);
-        }
-        var value = req.sessionStore.sessions[key];
-        console.log(value);
-        if(value.indexOf('email 인증을 완료해주세요.') != -1){
-            send_data = 'email 인증을 완료해주세요.';
-        }else if(value.indexOf('email을 확인해주세요.') != -1){
-            send_data = 'email을 확인해주세요.';
-        }else if(value.indexOf('password를 확인해주세요.')!=-1){
-            send_data = 'password를 확인해주세요.';
-        }
-        res.send(send_data);
-        
-    }); 
-    
-    
-    // true
-    router.route('/signup_true').get(function(req, res) {
-        console.log('/signup_true 패스 요청됨.');
-        res.send("true");
-    });
-    //false
-    router.route('/signup_false').get(function(req, res) {
-        console.log('/signup_false 패스 요청됨.');
-        var send_data2= 'false';
-        for(var key in req.sessionStore.sessions){
-            console.log(key);
-        }
-        var value = req.sessionStore.sessions[key];
-        console.log(value);
-        if(value.indexOf('계정이 이미 있습니다.') != -1){
-            send_data2 = '계정이 이미 있습니다.';
-        }
-        res.send(send_data2);
-        
+	 
+    // 회원가입 화면
+    router.route('/signup').get(function(req, res) {
+        console.log('/signup 패스 요청됨.');
+        var id = req.query.id;
+        var pw = req.query.pw;
+        var name = req.query.name;
+        var database = req.app.get('database');
+        res.header("Access-Control-Allow-Origin","*");
+        res.header("Access-Control-Allow-Headers", "X-Requested-With");
+        res.header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
+        database.UserModel.findOne({ 'id' :  id }, function(err, user) {
+            // 에러 발생 시
+            if (err) {
+                return done(err);
+            }
+            
+            // 기존에 사용자 정보가 있는 경우
+            if (user) {
+                console.log('기존에 계정이 있음.');
+                res.send('기존에 계정이 있음.');
+            } else {
+                // 모델 인스턴스 객체 만들어 저장
+                var user = new database.UserModel({'id':id, 'password':pw, 'name':name});
+                user.save(function(err) {
+                    if (err) {
+                        throw err;
+                    }
+                    
+                    console.log("사용자 데이터 추가함.");
+                    res.send('success');
+                });
+            }
+        });    
     });
 
-
-    // 로그인 인증
-    router.route('/login').post(passport.authenticate('local-login', {
-        successRedirect : '/login_true', 
-        failureRedirect : '/login_false', 
-        failureFlash: true
-    }));
-    
-
-    // 회원가입 인증
-    router.route('/signup').post(passport.authenticate('local-signup', {
-        successRedirect : '/signup_true', 
-        failureRedirect : '/signup_false', 
-        failureFlash : true 
-    }));
-/*
-    // 패스포트 - 구글
-    router.route('/auth/google').get(passport.authenticate('google', { 
-        scope : 'email' 
-    }));
-
-    // 패스포트 - 구글
-    router.route('/auth/google/callback').get(passport.authenticate('google', {
-        successRedirect : '/true',
-        failureRedirect : '/false'
-    }));
-*/
 };

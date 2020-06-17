@@ -68,7 +68,8 @@ app.use(expressSession({
 	resave:true,
 	saveUninitialized:true
 }));
-
+var fileupload = require('express-fileupload');
+app.use(fileupload());
 
 
 //===== Passport 사용 설정 =====//
