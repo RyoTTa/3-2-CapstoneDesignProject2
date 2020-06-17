@@ -1,0 +1,100 @@
+rm -rf opencv
+rm -rf opencv_contrib
+mkdir installation
+mkdir installation/OpenCV-3.4
+# Save current working directory
+cwd=$(pwd)
+sudo yum -y install epel-release
+sudo yum -y install git gcc gcc-c++ cmake3 cmake
+sudo yum -y install qt5-qtbase-devel
+sudo yum install -y python34 python34-devel python34-pip
+sudo yum install -y python python-devel python-pip
+
+sudo yum -y install python-devel python3-devel numpy python34-numpy
+sudo yum -y install gtk2-devel
+
+sudo yum install -y libpng-devel
+sudo yum install -y jasper-devel
+sudo yum install -y openexr-devel
+sudo yum install -y libwebp-devel
+sudo yum -y install libjpeg-turbo-devel 
+sudo yum install -y freeglut-devel mesa-libGL mesa-libGL-devel
+sudo yum -y install libtiff-devel 
+sudo yum -y install libdc1394-devel
+sudo yum -y install tbb-devel eigen3-devel
+sudo yum -y install boost boost-thread boost-devel
+sudo yum -y install libv4l-devel
+sudo yum -y install gstreamer-plugins-base-devel
+
+pip install cmake 
+pip install numpy scipy matplotlib scikit-image scikit-learn ipython dlib
+
+git clone https://github.com/opencv/opencv.git
+cd opencv
+git checkout $cvVersion
+cd ..
+
+git clone https://github.com/opencv/opencv_contrib.git
+cd opencv_contrib
+git checkout $cvVersion
+cd ..
+
+cd opencv
+mkdir build
+cd build
+
+cmake -D CMAKE_BUILD_TYPE=RELEASE \
+-D CMAKE_INSTALL_PREFIX=/usr/local \
+-D WITH_TBB=OFF \
+-D WITH_IPP=OFF \
+-D WITH_1394=OFF \
+-D BUILD_WITH_DEBUG_INFO=OFF \
+-D BUILD_DOCS=OFF \
+-D INSTALL_C_EXAMPLES=ON \
+-D INSTALL_PYTHON_EXAMPLES=ON \
+-D BUILD_EXAMPLES=OFF \
+-D BUILD_TESTS=OFF \
+-D BUILD_PERF_TESTS=OFF \
+-D WITH_QT=OFF \
+-D WITH_GTK=ON \
+-D WITH_OPENGL=ON \
+-D OPENCV_EXTRA_MODULES_PATH=../../opencv_contrib/modules \
+-D WITH_V4L=ON  \
+-D WITH_FFMPEG=ON \
+-D OPENCV_GENERATE_PKGCONFIG=ON \
+-D WITH_XINE=ON \
+-D BUILD_NEW_PYTHON_SUPPORT=ON \
+-D PYTHON2_INCLUDE_DIR=/usr/include/python2.7 \
+-D PYTHON2_NUMPY_INCLUDE_DIRS=/usr/lib/python2.7/site-packages/numpy/core/include/ \
+-D PYTHON2_PACKAGES_PATH=/usr/lib/python2.7/site-packages \
+-D PYTHON2_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython2.7.so \
+-D PYTHON3_INCLUDE_DIR=/usr/include/python3.6m \
+-D PYTHON3_NUMPY_INCLUDE_DIRS=/usr/lib/python3/site-packages/numpy/core/include/  \
+-D PYTHON3_PACKAGES_PATH=/usr/lib/python3/site-packages \
+-D PYTHON3_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython3.6m.so \
+../
+
+ 
+
+sudo make
+make install 
+
+PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/lib/pkgconfig
+export LD_LIBRARY_PATH=/usr/local/lib/:/usr/local/lib64/:LD_LIBRARY_PATH
+export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig/:/usr/lib/arm-linux-gnueabi/pkgconfig:PKG_CONFIG_PATH
+
+opencv.pc file
+# Package Information for pkg-config
+
+prefix=/usr/local
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib64
+includedir_old=${prefix}/include/opencv
+includedir_new=${prefix}/include
+ 
+Name: OpenCV
+Description: Open Source Computer Vision Library
+Version: 3.4.10
+Libs: -L${exec_prefix}/lib64 -lopencv_stitching -lopencv_superres -lopencv_videostab -lopencv_aruco -lopencv_bgsegm -lopencv_bioinspired -lopencv_ccalib -lopencv_dnn_objdetect -lopencv_dpm -lopencv_highgui -lopencv_videoio -lopencv_face -lopencv_freetype -lopencv_fuzzy -lopencv_hfs -lopencv_img_hash -lopencv_line_descriptor -lopencv_optflow -lopencv_reg -lopencv_rgbd -lopencv_saliency -lopencv_stereo -lopencv_structured_light -lopencv_phase_unwrapping -lopencv_surface_matching -lopencv_tracking -lopencv_datasets -lopencv_text -lopencv_dnn -lopencv_plot -lopencv_xfeatures2d -lopencv_shape -lopencv_video -lopencv_ml -lopencv_ximgproc -lopencv_xobjdetect -lopencv_objdetect -lopencv_calib3d -lopencv_imgcodecs -lopencv_features2d -lopencv_flann -lopencv_xphoto -lopencv_photo -lopencv_imgproc -lopencv_core
+Libs.private: -ldl -lm -lpthread -lrt
+Cflags: -I${includedir_old} -I${includedir_new}
