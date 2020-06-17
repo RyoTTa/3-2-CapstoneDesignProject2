@@ -8,75 +8,47 @@
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
     />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script
+      type="text/javascript"
+      src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=pg43l9dp5c"
+    ></script>
     <link
       href="https://fonts.googleapis.com/css?family=Roboto+Mono:100,300,400,500,700&display=swap"
       rel="stylesheet"
     />
+    <link rel="stylesheet" type="text/css" href="Content.css" />
+    <script type="text/javascript" src="./func.js"></script>
     <title>Click Web</title>
   </head>
   <body>
     <div id="root"></div>
     <div id="map" style="width: 100%; height: 100vh;"></div>
-    <div
-      class="iw_inner"
-      style="
-        width: 80px;
-        height: 100%;
-        position: absolute;
-        top: 0;
-        left: 0;
-        z-index: 1000;
-        background-color: #fff;
-        border: solid 2px #cfd2d5;
-      "
-    >
-      <img
-        id="home"
-        src="/icon/home.png"
-        style="width: 80px; height: 80px;"
-        onclick="link('homepage')"
-      />
-      <img src="/icon/map_black.png" style="width: 80px; height: 80px;" />
-      <img
-        src="/icon/chart.png"
-        style="width: 80px; height: 80px;"
-        onclick="link('chartpage')"
-      />
-      <img
-        src="/icon/logout.png"
-        style="
-          width: 80px;
-          height: 80px;
-          position: absolute;
-          bottom: 5px;
-          left: 0px;
-        "
-      />
-    </div>
+    <div class="iw_inner">
+      <a href="http://155.230.28.207:3000/login/" target="_blank">
+        <input type="image" id="image" src="/icon/home.png" />
+      </a>
 
-    <script
-      type="text/javascript"
-      src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=pg43l9dp5c"
-    ></script>
+      <img id="image" src="/icon/map_black.png" />
+      <img id="image" src="/icon/calendar.png" />
+      <img id="image" src="/icon/camera.png" />
+      <img id="logout" src="/icon/logout.png" />
+    </div>
 
     <script>
       // boundary
+      /*
       var bound = new naver.maps.LatLngBounds(
         new naver.maps.LatLng(35.721397, 128.300916),
         new naver.maps.LatLng(35.973666, 128.764745)
       );
-
-      function link(elementId) {
-        var urlName = "./" + elementId + ".html";
-        location.href = urlName;
-      }
+      */
 
       // 맵 생성
       var map = new naver.maps.Map("map", {
         minZoom: 11, // 읍면동 레벨
         center: new naver.maps.LatLng(35.889845, 128.6105),
         zoom: 17,
-        maxBounds: bound,
+        //maxBounds: bound,
         //mapTypeId: "normal",
       });
 
@@ -87,6 +59,9 @@
         new naver.maps.LatLng(35.88689, 128.608494),
         new naver.maps.LatLng(35.888154, 128.6109),
         new naver.maps.LatLng(35.88814, 128.611388),
+        new naver.maps.LatLng(35.8886653, 128.6120414),
+        new naver.maps.LatLng(35.8923811, 128.6094879),
+        new naver.maps.LatLng(35.8915206, 128.6120736),
       ];
 
       // 숫자를 세자리 수로 변경 ex:1 => 001
@@ -102,10 +77,12 @@
 
       for (var i = 0, ii = latLngs.length; i < ii; i++) {
         var icon = {
-            url: HOME_PATH + "/marker_img/sp_pins_spot_v3.png",
+            url: HOME_PATH + "/marker_img/black_pin.png",
+            /*
             size: new naver.maps.Size(24, 37),
             anchor: new naver.maps.Point(12, 37),
             origin: new naver.maps.Point(i * 29, 0),
+            */
           },
           marker = new naver.maps.Marker({
             position: latLngs[i],
@@ -130,25 +107,27 @@
       function onMouseOver(e) {
         var marker = e.overlay,
           seq = marker.get("seq");
-
+        /*
         marker.setIcon({
-          url: HOME_PATH + "/marker_img/sp_pins_spot_v3_over.png",
+          url: HOME_PATH + "/marker_img/black_pin.png",
           size: new naver.maps.Size(24, 37),
           anchor: new naver.maps.Point(12, 37),
           origin: new naver.maps.Point(seq * 29, 50),
-        });
+        });*/
       }
 
       function onMouseOut(e) {
         var marker = e.overlay,
           seq = marker.get("seq");
 
+        /*
         marker.setIcon({
           url: HOME_PATH + "/marker_img/sp_pins_spot_v3.png",
           size: new naver.maps.Size(24, 37),
           anchor: new naver.maps.Point(12, 37),
           origin: new naver.maps.Point(seq * 29, 0),
         });
+        */
       }
 
       for (var i = 0, ii = markerList.length; i < ii; i++) {
@@ -164,11 +143,10 @@
           var marker = markerList[seq],
             url = urlArr[seq];
           window.open(url);
-          //xhr.open("GET", url, true);
-          //xhr.send();
         };
       }
 
+      /*
       // 경북대 테두리
       var knu = new naver.maps.Polygon({
         map: map,
@@ -231,84 +209,6 @@
             new naver.maps.LatLng(35.8921981, 128.6091146),
             new naver.maps.LatLng(35.8923133, 128.6092702),
             new naver.maps.LatLng(35.8923839, 128.6093801),
-          ],
-        ],
-        strokeColor: "black",
-        strokeOpacity: 0.6,
-        strokeWeight: 3,
-      });
-
-      /*
-      // 대구 테두리
-      var Daegu = new naver.maps.Polygon({
-        map: map,
-        paths: [
-          [
-            new naver.maps.LatLng(36.0155733, 128.6960412),
-            new naver.maps.LatLng(36.0032279, 128.7268779),
-            new naver.maps.LatLng(35.9853614, 128.7309739),
-            new naver.maps.LatLng(35.9728686, 128.7462102),
-            new naver.maps.LatLng(35.9295961, 128.7366945),
-            new naver.maps.LatLng(35.9067465, 128.7599251),
-            new naver.maps.LatLng(35.866058, 128.7597675),
-            new naver.maps.LatLng(35.8512982, 128.7385723),
-            new naver.maps.LatLng(35.85686, 128.7218141),
-            new naver.maps.LatLng(35.8359809, 128.7250118),
-            new naver.maps.LatLng(35.8263781, 128.7085255),
-            new naver.maps.LatLng(35.8070139, 128.7174619),
-            new naver.maps.LatLng(35.7901504, 128.6823415),
-            new naver.maps.LatLng(35.7564327, 128.6960775),
-            new naver.maps.LatLng(35.7216617, 128.683266),
-            new naver.maps.LatLng(35.7031625, 128.6201766),
-            new naver.maps.LatLng(35.7439735, 128.6090612),
-            new naver.maps.LatLng(35.7310761, 128.5888805),
-            new naver.maps.LatLng(35.7379457, 128.5816771),
-            new naver.maps.LatLng(35.7362167, 128.5642024),
-            new naver.maps.LatLng(35.7114429, 128.5286892),
-            new naver.maps.LatLng(35.6937883, 128.5356596),
-            new naver.maps.LatLng(35.6832618, 128.5298805),
-            new naver.maps.LatLng(35.6729581, 128.507685),
-            new naver.maps.LatLng(35.6391973, 128.5053628),
-            new naver.maps.LatLng(35.6384241, 128.4465993),
-            new naver.maps.LatLng(35.6216381, 128.43101),
-            new naver.maps.LatLng(35.6250996, 128.4227538),
-            new naver.maps.LatLng(35.6065398, 128.3823989),
-            new naver.maps.LatLng(35.6108809, 128.3717476),
-            new naver.maps.LatLng(35.6232489, 128.3933059),
-            new naver.maps.LatLng(35.6440742, 128.398697),
-            new naver.maps.LatLng(35.6768813, 128.3596807),
-            new naver.maps.LatLng(35.7040156, 128.3517967),
-            new naver.maps.LatLng(35.7087012, 128.3588782),
-            new naver.maps.LatLng(35.6958418, 128.4122017),
-            new naver.maps.LatLng(35.7048945, 128.4321466),
-            new naver.maps.LatLng(35.725598, 128.4318159),
-            new naver.maps.LatLng(35.7483526, 128.3912469),
-            new naver.maps.LatLng(35.7600868, 128.3834692),
-            new naver.maps.LatLng(35.8093545, 128.4208295),
-            new naver.maps.LatLng(35.8059355, 128.4664271),
-            new naver.maps.LatLng(35.8189025, 128.4798359),
-            new naver.maps.LatLng(35.8396161, 128.468946),
-            new naver.maps.LatLng(35.8466568, 128.4500015),
-            new naver.maps.LatLng(35.8528346, 128.3835101),
-            new naver.maps.LatLng(35.8999265, 128.3989766),
-            new naver.maps.LatLng(35.9013013, 128.4074346),
-            new naver.maps.LatLng(35.9280408, 128.4249016),
-            new naver.maps.LatLng(35.9350416, 128.4503381),
-            new naver.maps.LatLng(35.9431494, 128.4541552),
-            new naver.maps.LatLng(35.9344393, 128.4764188),
-            new naver.maps.LatLng(35.9003086, 128.467786),
-            new naver.maps.LatLng(35.8947957, 128.4751758),
-            new naver.maps.LatLng(35.8979803, 128.4905824),
-            new naver.maps.LatLng(35.8871588, 128.5022418),
-            new naver.maps.LatLng(35.9061093, 128.5068262),
-            new naver.maps.LatLng(35.9236223, 128.5294652),
-            new naver.maps.LatLng(35.9383554, 128.535366),
-            new naver.maps.LatLng(35.980238, 128.5288778),
-            new naver.maps.LatLng(35.9607414, 128.5534071),
-            new naver.maps.LatLng(35.9722248, 128.5568131),
-            new naver.maps.LatLng(35.9859057, 128.6028925),
-            new naver.maps.LatLng(36.0067373, 128.6174858),
-            new naver.maps.LatLng(36.0155733, 128.6960412),
           ],
         ],
         strokeColor: "black",

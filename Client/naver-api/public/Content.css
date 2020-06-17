@@ -1,0 +1,30 @@
+#Content {
+  color: black;
+  position: absolute;
+  left: 85px;
+  top: 0px;
+}
+
+#image {
+  width: 80px;
+  height: 80px;
+}
+
+#logout {
+  width: 80px;
+  height: 80px;
+  position: absolute;
+  bottom: 5px;
+  left: 0px;
+}
+
+.iw_inner {
+  width: 80px;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  background-color: #fff;
+  border: solid 2px #cfd2d5;
+}

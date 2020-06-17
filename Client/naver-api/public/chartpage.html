@@ -3,43 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <title>Chart Page</title>
+    <script src="func.js"></script>
+    <link rel="stylesheet" type="text/css" href="Content.css" />
   </head>
 
   <body>
-    <div
-      class="iw_inner"
-      style="
-        width: 80px;
-        height: 100%;
-        position: absolute;
-        top: 0;
-        left: 0;
-        z-index: 1000;
-        background-color: #fff;
-        border: solid 2px #cfd2d5;
-      "
-    >
-      <img
-        id="home"
-        src="/icon/home.png"
-        style="width: 80px; height: 80px;"
-        onclick="link('homepage')"
-      />
-      <img src="/icon/map.png" style="width: 80px; height: 80px;" />
-      <img src="/icon/chart_black.png" style="width: 80px; height: 80px;" />
-      <img
-        src="/icon/logout.png"
-        style="
-          width: 80px;
-          height: 80px;
-          position: absolute;
-          bottom: 5px;
-          left: 0px;
-        "
-      />
+    <div class="iw_inner">
+      <img id="image" src="/icon/home.png" onclick="link('homepage')" />
+      <img id="image" src="/icon/map.png" onclick="link('index')" />
+      <img id="image" src="/icon/chart_black.png" />
+      <img id="logout" src="/icon/logout.png" />
     </div>
-    <div>
-      <h1>hihi</h1>
+    <div id="Content">
+      <h1>차트 넣을겁니다</h1>
     </div>
 
     <script type="text/javascript"></script>

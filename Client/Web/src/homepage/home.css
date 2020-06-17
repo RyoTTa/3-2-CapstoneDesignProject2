@@ -1,0 +1,42 @@
+.title {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 1000px;
+}
+
+.title h2 {
+  text-align: center;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 1);
+  font-size: 50px;
+  margin-bottom: 50px;
+}
+
+.icon {
+  transform: scale(1, 1);
+  width: 150px;
+  height: 150px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.description {
+  width: 1000px;
+  height: 500px;
+  display: block;
+  text-align: center;
+}
+
+table {
+  width: 100%;
+}
+
+#desImg {
+  width: 800px;
+  height: 500px;
+  margin: 0px auto;
+  border-radius: 10px;
+}
