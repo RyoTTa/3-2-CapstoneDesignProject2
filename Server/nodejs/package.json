@@ -20,7 +20,7 @@
     "fcm-push": "^1.1.3",
     "forever": "^2.0.0",
     "fs": "0.0.1-security",
-    "moment": "^2.25.3",
+    "moment": "^2.29.2",
     "moment-timezone": "^0.5.28",
     "mongoose": "^4.13.20",
     "nodemailer": "^6.3.1",
